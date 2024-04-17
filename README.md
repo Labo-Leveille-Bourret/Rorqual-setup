@@ -1,2 +1,3 @@
 # Beluga-setup
-Beluga cluster setup for my lab members
+
+Beluga cluster setup for my lab members.
