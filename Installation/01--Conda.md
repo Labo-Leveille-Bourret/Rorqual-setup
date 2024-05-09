@@ -1,5 +1,17 @@
 # Setting up conda, conda environments and programs
 
+## Every user needs to run the code below to be able to access conda!!!
+
+Users in my group will need to run this code to be able to access Miniconda:
+```bash
+Miniconda:
+```bash
+SRC=/project/def-bourret/shared/progs/miniconda/bin
+$SRC/conda init bash
+$SRC/conda config --set auto_activate_base false
+
+```
+
 ## Installing and setting up conda
 
 Install Miniconda:
@@ -17,20 +29,11 @@ rm ./Miniconda3-latest-Linux-x86_64.sh
 
 ```
 
-Users in my group will need to run this code to be able to access Miniconda:
-```bash
-Miniconda:
-```bash
-SRC=/project/def-bourret/shared/progs/miniconda/bin
-$SRC/conda init bash
-$SRC/conda config --set auto_activate_base false
-
-```
-
 Install some basic python programs in the base environment:
 ```bash
 conda activate base
 conda install -c bioconda newick_utils
+conda install -c bioconda catfasta2phyml
 
 ```
 
