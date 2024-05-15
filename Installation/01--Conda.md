@@ -14,6 +14,8 @@ $SRC/conda config --set auto_activate_base false
 
 ## Installing and setting up conda
 
+Users in my group *PLEASE DO NOT RUN THE CODE BELOW*, as these are already installed.
+
 Install Miniconda:
 ```bash
 WD=/project/def-bourret/shared/progs
@@ -25,13 +27,22 @@ chmod +x ./Miniconda3-latest-Linux-x86_64.sh
 $WD/miniconda/bin/conda init bash
 $WD/miniconda/bin/conda config --set auto_activate_base false
 $WD/miniconda/bin/conda update conda
+
+## wait for previous command to finish (saying "y" to all) and then run:
 rm ./Miniconda3-latest-Linux-x86_64.sh
 
 ```
 
-Install some basic python programs in the base environment:
+*Before continuing:* run the command in the section above to initialize conda, close the connection with the cluster, and then reconnect.
+
+
+Then, install some basic python programs in the base environment:
 ```bash
+SRC=/project/def-bourret/shared/progs/miniconda/bin
 conda activate base
+$SRC/conda config --add channels defaults
+$SRC/conda config --add channels bioconda
+$SRC/conda config --add channels conda-forge
 conda install -c bioconda newick_utils
 conda install -c bioconda catfasta2phyml
 
@@ -39,24 +50,25 @@ conda install -c bioconda catfasta2phyml
 
 ## Installing conda environments and programs
 
-
-
-HybPiper (in conda environment):
+Newick_utils (in conda environment):
 ```bash
 SRC=/project/def-bourret/shared/progs/miniconda/bin
-$SRC/conda config --add channels defaults
-$SRC/conda config --add channels bioconda
-$SRC/conda config --add channels conda-forge
+
+## newick_utils
+$SRC/conda create -n newick_utils -c bioconda newick_utils
+
+## hybpiper
 $SRC/conda create -n hybpiper -c chrisjackson-pellicle hybpiper
 
-```
-
-getOrganelle (in conda environment):
-```bash
-
-$WD/miniconda/bin/conda create -n getOrganelle -c bioconda getorganelle
+## getOrganelle
+$SRC/conda create -n getOrganelle -c bioconda getorganelle
 conda activate getOrganelle
 get_organelle_config.py --config-dir $WD/getOrganelle --add embplant_pt,embplant_mt,embplant_nr
+
+
+
+## list all environments
+$SRC/conda info --envs
 
 ```
 

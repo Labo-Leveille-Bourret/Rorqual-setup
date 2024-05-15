@@ -14,3 +14,20 @@ getfacl shared
 
 ```
 
+However, within this folder, make sure that nobody can write some critical folders that include programs installed for all group members (enable only write/execute on these folders):
+```
+cd /project/def-bourret/shared
+
+mkdir -p ./progs
+chmod -R g-w progs
+setfacl -R -d -m g::rx progs
+getfacl progs
+
+mkdir -p ./R
+chmod -R g-w R
+setfacl -R -d -m g::rx R
+getfacl R
+
+```
+
+
