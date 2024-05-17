@@ -30,4 +30,14 @@ getfacl R
 
 ```
 
+Also create another folder to hold shared probe sequence files for HybSeq experiments:
+```bash
+cd /project/def-bourret/shared
+
+mkdir -p hybseqRefs
+chmod -R g-w hybseqRefs
+setfacl -R -d -m g::rx hybseqRefs
+getfacl hybseqRefs
+
+```
 

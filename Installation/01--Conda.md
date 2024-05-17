@@ -53,6 +53,7 @@ conda install -c bioconda catfasta2phyml
 Newick_utils (in conda environment):
 ```bash
 SRC=/project/def-bourret/shared/progs/miniconda/bin
+WD=/project/def-bourret/shared/progs
 
 ## newick_utils
 $SRC/conda create -n newick_utils -c bioconda newick_utils
@@ -65,10 +66,26 @@ $SRC/conda create -n getOrganelle -c bioconda getorganelle
 conda activate getOrganelle
 get_organelle_config.py --config-dir $WD/getOrganelle --add embplant_pt,embplant_mt,embplant_nr
 
-
+## HTStream
+$SRC/conda create -n htstream -c bioconda htstream
 
 ## list all environments
 $SRC/conda info --envs
 
 ```
 
+
+
+## Problems to solve
+
+I can't seem to install NovoWrap correctly in a conda environment. Here is what I tried up to now:
+
+## NovoWrap
+## Following issue #13 on the github, I found out that I need to install using pip
+$SRC/conda create -n novowrap python=3.8 pip
+conda activate novowrap
+$SRC/../envs/novowrap/bin/pip install -U --force-reinstall novowrap==1.30
+
+$SRC/conda create -n novowrap -c wpwupingwp biopython=1.77 novowrap
+To remove:
+conda install 'wheel>=0.32.3' 'biopython>=1.77' 'coloredlogs>=10.0' 'matplotlib>=3.2.0' 'numpy>=1.19.1' 'pip>=18.0' 'graphviz>=0.13'
