@@ -78,30 +78,6 @@ sq
 
 ```
 
-zcat ../SRR14320985_1.fastq.gz | head -n40000 | gzip > test_1.fastq.gz
-zcat ../SRR14320985_2.fastq.gz | head -n40000 | gzip > test_2.fastq.gz
-module load bbmap/39.06
-clumpify.sh \
-  in1=test_1.fastq.gz \
-  in2=test_2.fastq.gz \
-  out1=test_1.dedup.fastq.gz \
-  out2=test_2.dedup.fastq.gz \
-  dedupe=t \
-  shortname=t \
-  unpair=t \
-  repair=t \
-  tmpdir=$SCRATCH \
-  usetmpdir=t \
-  -Xmx1g
-
-
-zcat ../SRR14320985_1.fastq.gz | head -n40000 | gzip > test_1.fastq.gz
-zcat ../SRR14320985_2.fastq.gz | head -n40000 | gzip > test_2.fastq.gz
-conda activate htstream
-hts_SuperDeduper -1 test_1.fastq.gz -2 test_2.fastq.gz -f test/test_dedup
-
-
-
 Download FastQC html files on local computer, to check them in browser. Do not forget to change `LOCAL` to a path on your own computer, and then run this code on a **local** terminal. For Windows users, the path of `LOCAL` begins with `/mnt/c` and needs to use only forward slashes (not backward slashes in Unix, they mean something else!):
 ```bash
 LOCAL=~/Downloads

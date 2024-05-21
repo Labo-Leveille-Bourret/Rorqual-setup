@@ -75,6 +75,16 @@ nohup gzip *.fastq &
 mv *.fastq.gz ./reads/
 rm -r SRR*/ nohup.out
 
+## include species name in read file name
+cd $WD/reads
+for i in *_1.fastq.gz
+  do
+    NAME=$(basename $i _1.fastq.gz)
+    SP=$(grep "$NAME" $WD/SraRunInfo.csv | cut -d',' -f29 | sed 's/ /_/g')
+    mv ${NAME}_1.fastq.gz ${SP}_${NAME}_1.fastq.gz
+    mv ${NAME}_2.fastq.gz ${SP}_${NAME}_2.fastq.gz
+  done
+
 ```
 
 
