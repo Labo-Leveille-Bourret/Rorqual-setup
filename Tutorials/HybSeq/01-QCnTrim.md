@@ -44,7 +44,7 @@ hts_SuperDeduper \\
   -1 \$READ1\\
   -2 \$READ2 \\
   -s 5 \\
-  -l 85 \
+  -l 85 \\
   --stats-file $READS_DIR/dedup/dedup_stats_\$SLURM_ARRAY_TASK_ID.log \\
   -f $READS_DIR/dedup/\${NAME}_dedup
   

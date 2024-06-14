@@ -4,8 +4,6 @@
 
 Users in my group will need to run this code to be able to access Miniconda:
 ```bash
-Miniconda:
-```bash
 SRC=/project/def-bourret/shared/progs/miniconda/bin
 $SRC/conda init bash
 $SRC/conda config --set auto_activate_base false
@@ -50,7 +48,7 @@ conda install -c bioconda catfasta2phyml
 
 ## Installing conda environments and programs
 
-Newick_utils (in conda environment):
+Creating environments and installing software inside those environments:
 ```bash
 SRC=/project/def-bourret/shared/progs/miniconda/bin
 WD=/project/def-bourret/shared/progs
@@ -69,6 +67,12 @@ get_organelle_config.py --config-dir $WD/getOrganelle --add embplant_pt,embplant
 ## HTStream
 $SRC/conda create -n htstream -c bioconda htstream
 
+## RagTag
+$SRC/conda create -n ragtag -c bioconda ragtag
+
+## ipyrad
+conda create -y -n ipyrad -c conda-forge ipyrad
+
 ## list all environments
 $SRC/conda info --envs
 
@@ -81,7 +85,7 @@ $SRC/conda info --envs
 I can't seem to install NovoWrap correctly in a conda environment. Here is what I tried up to now:
 
 ## NovoWrap
-## Following issue #13 on the github, I found out that I need to install using pip
+## Following issue #13 on the github, I found out that I need to install using pip, but still not working
 $SRC/conda create -n novowrap python=3.8 pip
 conda activate novowrap
 $SRC/../envs/novowrap/bin/pip install -U --force-reinstall novowrap==1.30

@@ -41,3 +41,16 @@ getfacl hybseqRefs
 
 ```
 
+Also create another folder to hold share genome sequences:
+```bash
+cd /project/def-bourret/shared
+
+mkdir -p genomeRefs
+chmod -R g-w genomeRefs
+setfacl -R -d -m g::rx genomeRefs
+getfacl genomeRefs
+
+
+```
+
+

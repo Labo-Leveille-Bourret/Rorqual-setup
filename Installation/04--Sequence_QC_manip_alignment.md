@@ -1,4 +1,4 @@
-# Installing sequencing data processing programs
+# Installing sequence data QC, processing, manipulation and alignment programs
 
 Install SRA-toolkit:
 ```bash
@@ -44,4 +44,20 @@ git clone https://github.com/nylander/catfasta2phyml.git
 chmod +x catfasta2phyml.pl
 
 ```
+
+OMM_Macse for alignment of genes and pseudogenes at the nucleotide level based on codon similarity:
+```bash
+WD=/project/def-bourret/shared/progs
+
+cd $WD
+
+module load StdEnv/2023
+module load apptainer/1.2.4
+
+apptainer remote add --no-login SylabsCloud cloud.sycloud.io
+apptainer remote use SylabsCloud
+apptainer pull --arch amd64 library://vranwez/default/omm_macse:v12.01
+
+```
+
 
