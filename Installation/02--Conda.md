@@ -53,6 +53,10 @@ Creating environments and installing software inside those environments:
 SRC=/project/def-bourret/shared/progs/miniconda/bin
 WD=/project/def-bourret/shared/progs
 
+## biopython
+$SRC/conda create -n bio -c conda-forge biopython matplotlib
+
+
 ## newick_utils
 $SRC/conda create -n newick_utils -c bioconda newick_utils
 
@@ -71,7 +75,10 @@ $SRC/conda create -n htstream -c bioconda htstream
 $SRC/conda create -n ragtag -c bioconda ragtag
 
 ## ipyrad
-conda create -y -n ipyrad -c conda-forge ipyrad
+$SRC/conda create -y -n ipyrad -c conda-forge ipyrad
+
+## wgd
+$SRC/conda create -y -n wgd -c bioconda click pandas matplotlib rich bio wgd
 
 ## list all environments
 $SRC/conda info --envs

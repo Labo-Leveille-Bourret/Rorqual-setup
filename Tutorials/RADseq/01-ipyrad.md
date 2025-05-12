@@ -8,7 +8,7 @@ Because the dataset contains a combination of samples from different projects, t
 
 ## Demultiplex (=sort), trim and filter
 
-Use ipyrad to demultiplex, trim and filter raw reads:
+Use ipyrad to demultiplex, trim and filter raw reads:  
 ```bash
 SRC=/project/def-bourret/shared/progs
 READS=/home/bourret/projects/def-bourret/shared/data/3rad_2024-06-04_plate1/3RAD_test*/*.fq.gz
@@ -152,10 +152,138 @@ sbatch --mail-user=$EMAIL ipyrad_$BRANCH.sbatch
 
 ```
 
+The genus Crataegus is known to have one ancient whole-genome duplication (WGD) for which many duplicates have been 
+maintained. On average, the divergence between duplicates of this WGD is 8%, so that a clustering threshold below this 
+would ideally be required to uncover orthologous loci (at the diploid level). If the 8% divergence is correct for RAD 
+loci as well, we expect to find a peak at 8% divergence when looking at pairwise sequence divergence within each cluster 
+within each individual. Here is code to assess % divergence within cluster and individual:  
+```bash
+SRC=/project/def-bourret/shared/progs
+CLUST_FOLDER=/home/$USER/scratch/RADtest/crat1_clust_0.85
+
+mkdir -p ${CLUST_FOLDER}_dist
+cd ${CLUST_FOLDER}_dist
+
+ln -s $CLUST_FOLDER/*.clustS.gz .
+
+conda activate bio
+for SAMPLE in $(ls *.clustS.gz)
+  do
+    NAME=$(basename $SAMPLE .clustS.gz)
+    gunzip -c $SAMPLE > $NAME.clustS
+    python $SRC/radseq_wgd.py --infile $NAME.clustS --outname $NAME
+	rm $NAME.clustS
+  done
+
+```
+
+
+Not very clear from the data I have, but I will still use a threshold of 5% divergence because paralogues from the ancient 
+WGD of Malineae are supposed to have around 8% divergence, with a valley between the divergence of ancient WGD and more 
+recent duplicates around 5% divergence ((Wu et al. 2013))[https://doi.org/10.1101/gr.144311.112]
+```bash
+SRC=/project/def-bourret/shared/progs
+WD=/home/$USER/scratch/RADtest
+EMAIL=etienne.leveille-bourret@umontreal.ca
+TIME="0-24:00:00"
+CORES=32
+BRANCH=crat1-strict
+SAMPLES="Crataegus_brainerdii_ELB_0040 Crataegus_canadensis_ELB_0024 Crataegus_chrysocarpa_var_chrysocarpa_ELB_0026 Crataegus_chrysocarpa_var_phoeniceoides_ELB_0025 Crataegus_coccinioides_ELB_0022 Crataegus_crus-galli_ELB_0053 Crataegus_flabellata_ELB_0031 Crataegus_fluviatilis_ELB_0042 Crataegus_fretalis_ELB_0034 Crataegus_grayana_ELB_0030 Crataegus_holmesiana_ELB_0027 Crataegus_irrasa_ELB_0033 Crataegus_macracantha_ELB_0060 Crataegus_punctata_ELB_0058 Crataegus_scabrida_ELB_0049 Crataegus_submollis_ELB_0023 Crataegus_suborbiculata_ELB_0028 Crataegus_x_integriloba_ELB_0029"
+
+cd $WD
+
+## create a branch for this assembly
+module purge
+module load StdEnv/2020 python/3.10 muscle/3.8.1551 samtools/1.17 bedtools/2.30.0 vsearch/2.21.1 bwa/0.7.17
+source $SRC/ipyrad/bin/activate
+ipyrad -p params-test.txt -b $BRANCH $SAMPLES
+
+## cluster at 95% similarity
+sed -i "s,0.85                           ## \[14\],0.95                           ## \[14\],g" params-$BRANCH.txt
+
+## allow up to 4 alleles per sample
+sed -i "s,2                              ## \[18\],4                              ## \[18\],g" params-$BRANCH.txt
+
+## allow most samples to share the same heterozygous sites
+sed -i "s,0.5                            ## \[24\],0.9                            ## \[24\],g" params-$BRANCH.txt
+
+## create SLURM batchfile to finish assembly on this branch
+echo '#!/bin/bash' > ipyrad_$BRANCH.sbatch
+echo "#SBATCH --job-name=ipyrad_$BRANCH
+#SBATCH --output=ipyrad_$BRANCH.out
+#SBATCH --mail-type=end
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=$CORES
+#SBATCH --mem-per-cpu=2G
+#SBATCH --time=$TIME
+
+ipyrad -c $CORES -p params-$BRANCH.txt -s 34567" >> ipyrad_$BRANCH.sbatch
+
+## submit this batchfile to SLURM
+sbatch --mail-user=$EMAIL ipyrad_$BRANCH.sbatch
+
+```
+
+Using 5% divergence as the threshold seems to be working remarkably well with hawthorns, at least for the species that 
+were included in this first test round.
+
+One last option that can be used to deal with the problem of paralogy is to use a reference genome to map the reads and 
+discard the reads that are not uniquely mapped on the reference. This is likely the best approach to minimize the problem 
+of paralogy without over-splitting the loci. I will test this approach here:  
+```bash
+SRC=/project/def-bourret/shared/progs
+WD=/home/$USER/scratch/RADtest
+EMAIL=etienne.leveille-bourret@umontreal.ca
+TIME="0-24:00:00"
+CORES=32
+BRANCH=crat1-ref
+SAMPLES="Crataegus_brainerdii_ELB_0040 Crataegus_canadensis_ELB_0024 Crataegus_chrysocarpa_var_chrysocarpa_ELB_0026 Crataegus_chrysocarpa_var_phoeniceoides_ELB_0025 Crataegus_coccinioides_ELB_0022 Crataegus_crus-galli_ELB_0053 Crataegus_flabellata_ELB_0031 Crataegus_fluviatilis_ELB_0042 Crataegus_fretalis_ELB_0034 Crataegus_grayana_ELB_0030 Crataegus_holmesiana_ELB_0027 Crataegus_irrasa_ELB_0033 Crataegus_macracantha_ELB_0060 Crataegus_punctata_ELB_0058 Crataegus_scabrida_ELB_0049 Crataegus_submollis_ELB_0023 Crataegus_suborbiculata_ELB_0028 Crataegus_x_integriloba_ELB_0029"
+REFGENOME=/project/def-bourret/shared/genomeRefs/nuc/Crataegus_pinnatifida_var_major.chromOnly.fasta
+
+cd $WD
+
+## create a branch for this assembly
+module purge
+module load StdEnv/2020 python/3.10 muscle/3.8.1551 samtools/1.17 bedtools/2.30.0 vsearch/2.21.1 bwa/0.7.17
+source $SRC/ipyrad/bin/activate
+ipyrad -p params-test.txt -b $BRANCH $SAMPLES
+
+## use mapping to reference genome for assembly
+sed -i "s,denovo                         ## \[5\],reference                      ## \[5\],g" params-$BRANCH.txt
+
+## indicate reference genome path
+sed -i "s,                               ## \[6\],$REFGENOME ## \[6\],g" params-$BRANCH.txt
+
+## cluster at 95% similarity
+sed -i "s,0.85                           ## \[14\],0.95                           ## \[14\],g" params-$BRANCH.txt
+
+## allow up to 4 alleles per sample
+sed -i "s,2                              ## \[18\],4                              ## \[18\],g" params-$BRANCH.txt
+
+## allow most samples to share the same heterozygous sites
+sed -i "s,0.5                            ## \[24\],0.9                            ## \[24\],g" params-$BRANCH.txt
+
+## create SLURM batchfile to finish assembly on this branch
+echo '#!/bin/bash' > ipyrad_$BRANCH.sbatch
+echo "#SBATCH --job-name=ipyrad_$BRANCH
+#SBATCH --output=ipyrad_$BRANCH.out
+#SBATCH --mail-type=end
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=$CORES
+#SBATCH --mem-per-cpu=2G
+#SBATCH --time=$TIME
+
+ipyrad -c $CORES -p params-$BRANCH.txt -s 34567" >> ipyrad_$BRANCH.sbatch
+
+## submit this batchfile to SLURM
+sbatch --mail-user=$EMAIL ipyrad_$BRANCH.sbatch
+
+```
+
 
 ## Results
 
-Results can be download on your local machine for analysis. Run this on your local machine:
+Results can be downloaded on your local machine for analysis. Run this on your local machine:
 ```bash
 LOCAL=~/Downloads
 WD=/home/bourret/scratch/RADtest
