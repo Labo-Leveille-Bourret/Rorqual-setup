@@ -18,7 +18,7 @@ ssh $USERNAME@beluga.computecanada.ca
 The computing server is organized in three partitions, each with different 
 uses and sizes:  
   - **`/home`** is a partition of only **50Gb** that can be used to install 
-	small programs or to store small files. Each user has his own `/home`.
+	small programs or to store small files. Each user has their own `/home`.
 	- **`/scratch`** is a large partition of **20Tb** that is used to store 
 	large files, but that is **temporary**. The files are deleted every month. 
 	Use this partition for assembling your data and doing your analyses, but 
