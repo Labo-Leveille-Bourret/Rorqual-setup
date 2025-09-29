@@ -2,7 +2,7 @@
 
 ## Every user needs to run the code below to be able to access conda!!!
 
-Users in my group will need to run this code to be able to access Miniconda:
+Users in my group will need to run this code to be able to access Miniconda:  
 ```bash
 SRC=/project/def-bourret/shared/progs/miniconda/bin
 $SRC/conda init bash
@@ -12,7 +12,8 @@ $SRC/conda config --set auto_activate_base false
 
 ## Installing and setting up conda
 
-Users in my group *PLEASE DO NOT RUN THE CODE BELOW*, as these are already installed.
+Users in my group *PLEASE DO NOT RUN THE CODE BELOW*, as these are already 
+installed.
 
 Install Miniconda:
 ```bash
@@ -31,34 +32,27 @@ rm ./Miniconda3-latest-Linux-x86_64.sh
 
 ```
 
-*Before continuing:* run the command in the section above to initialize conda, close the connection with the cluster, and then reconnect.
+*Before continuing:* run the command in the section above to initialize conda, 
+close the connection with the cluster, and then reconnect.
 
 
-Then, install some basic python programs in the base environment:
+Then, add some important default channels to conda:  
 ```bash
-SRC=/project/def-bourret/shared/progs/miniconda/bin
-conda activate base
-$SRC/conda config --add channels defaults
-$SRC/conda config --add channels bioconda
-$SRC/conda config --add channels conda-forge
-conda install -c bioconda newick_utils
-conda install -c bioconda catfasta2phyml
+conda config --add channels defaults
+conda config --add channels bioconda
+conda config --add channels conda-forge
 
 ```
 
 ## Installing conda environments and programs
 
-Creating environments and installing software inside those environments:
+Creating environments and installing software inside those environments:  
 ```bash
 SRC=/project/def-bourret/shared/progs/miniconda/bin
 WD=/project/def-bourret/shared/progs
 
 ## biopython
-$SRC/conda create -n bio -c conda-forge biopython matplotlib
-
-
-## newick_utils
-$SRC/conda create -n newick_utils -c bioconda newick_utils
+conda create -n bio -c bioconda -c conda-forge biopython matplotlib newick_utils catfasta2phyml
 
 ## hybpiper
 $SRC/conda create -n hybpiper -c chrisjackson-pellicle hybpiper
@@ -75,7 +69,7 @@ $SRC/conda create -n htstream -c bioconda htstream
 $SRC/conda create -n ragtag -c bioconda ragtag
 
 ## ipyrad
-$SRC/conda create -y -n ipyrad -c conda-forge ipyrad
+conda create -y -n ipyrad -c conda-forge ipyrad
 
 ## wgd
 $SRC/conda create -y -n wgd -c bioconda click pandas matplotlib rich bio wgd

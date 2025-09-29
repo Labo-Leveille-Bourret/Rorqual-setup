@@ -31,6 +31,11 @@ chmod -R g-w data
 setfacl -R -d -m g:def-bourret:rx data
 getfacl data
 
+mkdir -p ./newdata
+chmod -R g+w newdata
+setfacl -R -d -m g:def-bourret:rwx newdata
+getfacl newdata
+
 mkdir -p ./progs
 chmod -R g-w progs
 setfacl -R -d -m g:def-bourret:rx progs
@@ -52,5 +57,3 @@ setfacl -R -d -m g:def-bourret:rx genomeRefs
 getfacl genomeRefs
 
 ```
-
-
